@@ -9,15 +9,11 @@ export class Preloader extends Scene {
     //  We loaded this image in our Boot Scene, so we can display it here
     this.add.image(512, 384, "background");
 
-    //  A simple progress bar. This is the outline of the bar.
     this.add.rectangle(512, 384, 468, 32).setStrokeStyle(1, 0xffffff);
 
     //  This is the progress bar itself. It will increase in size from the left based on the % of progress.
     const progressBar = this.add.rectangle(512 - 230, 384, 4, 28, 0xffffff);
-
-    //  Use the 'progress' event emitted by the LoaderPlugin to update the loading bar
     this.load.on("progress", (progress: number) => {
-      //  Update the progress bar (our bar is 464px wide, so 100% = 464px)
       progressBar.width = 4 + 460 * progress;
     });
   }
@@ -31,9 +27,27 @@ export class Preloader extends Scene {
       "fonts/click-font.png",
       "fonts/click-font.xml"
     );
+
+    this.load.spritesheet("player", "char_sprites/soldier_spritesheet.png", {
+      frameWidth: 64,
+      frameHeight: 64,
+    });
   }
 
   create() {
+    this.anims.create({
+      key: "idle",
+      frames: this.anims.generateFrameNumbers("player", { start: 0, end: 3 }), // depends on your spritesheet
+      frameRate: 6,
+      repeat: -1,
+    });
+
+    this.anims.create({
+      key: "walk",
+      frames: this.anims.generateFrameNumbers("player", { start: 4, end: 7 }),
+      frameRate: 10,
+      repeat: -1,
+    });
     //  When all the assets have loaded, it's often worth creating global objects here that the rest of the game can use.
     //  For example, you can define global animations here, so we can use them in other scenes.
 

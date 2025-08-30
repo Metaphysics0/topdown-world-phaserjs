@@ -8,6 +8,8 @@ export class Game extends Scene {
   tileset!: Phaser.Tilemaps.Tileset;
   backgroundLayer!: Phaser.Tilemaps.TilemapLayer;
 
+  player!: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
+
   gameText!: Phaser.GameObjects.Text;
 
   constructor() {
@@ -24,7 +26,6 @@ export class Game extends Scene {
       "overworld_tileset-again" // <-- key you used in preload
     )!;
 
-    console.log("TILESET", tileset);
     const offsetX =
       ((this.sys.game.config.width as number) - map.widthInPixels) / 2;
     const offsetY =
@@ -33,12 +34,9 @@ export class Game extends Scene {
     map.createLayer("Tile Layer 1", tileset, offsetX, offsetY);
     map.createLayer("Tile Layer 2", tileset, offsetX, offsetY);
 
-    // Create each layer (use the layer names from Tiled)
-    // const layer1 = map.createLayer("Tile Layer 1", tileset, 0, 0);
-    // const layer2 = map.createLayer("Tile Layer 2", tileset, 0, 0);
-    // // create each layer
-    // map.createLayer("Tile Layer 1", tileset, 0, 0);
-    // map.createLayer("Tile Layer 2", tileset, 0, 0);
+    this.player = this.physics.add.sprite(100, 100, "player");
+    this.player.setScale(0.8); // Scale down if needed
+    // this.player.play("idle"); // Start with idle animation
 
     EventBus.emit("current-scene-ready", this);
   }

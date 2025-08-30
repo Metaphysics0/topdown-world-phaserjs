@@ -4,9 +4,7 @@
 
   let phaserRef: TPhaserRef = { game: null, scene: null };
 
-  const currentScene = (scene: Scene) => {
-    console.log("scene", scene);
-  };
+  const currentScene = (scene: Scene) => {};
 </script>
 
 <div id="app">
