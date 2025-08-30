@@ -4,6 +4,14 @@ export class InputManager {
   private static instance: InputManager;
   private cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
   private scene!: Scene;
+  
+  private touchInput = {
+    left: false,
+    right: false,
+    up: false,
+    down: false,
+    action: false,
+  };
 
   private constructor() {}
 
@@ -24,15 +32,20 @@ export class InputManager {
     let velocityX = 0;
     let velocityY = 0;
 
-    if (this.cursors.left.isDown) {
+    const leftPressed = this.cursors.left.isDown || this.touchInput.left;
+    const rightPressed = this.cursors.right.isDown || this.touchInput.right;
+    const upPressed = this.cursors.up.isDown || this.touchInput.up;
+    const downPressed = this.cursors.down.isDown || this.touchInput.down;
+
+    if (leftPressed) {
       velocityX = -speed;
-    } else if (this.cursors.right.isDown) {
+    } else if (rightPressed) {
       velocityX = speed;
     }
 
-    if (this.cursors.up.isDown) {
+    if (upPressed) {
       velocityY = -speed;
-    } else if (this.cursors.down.isDown) {
+    } else if (downPressed) {
       velocityY = speed;
     }
 
@@ -44,13 +57,23 @@ export class InputManager {
       this.cursors.left.isDown ||
       this.cursors.right.isDown ||
       this.cursors.up.isDown ||
-      this.cursors.down.isDown
+      this.cursors.down.isDown ||
+      this.touchInput.left ||
+      this.touchInput.right ||
+      this.touchInput.up ||
+      this.touchInput.down
     );
   }
 
-  // Add more input methods as needed
   public isActionPressed(): boolean {
-    // Example: spacebar for action
-    return this.scene.input.keyboard!.checkDown(this.scene.input.keyboard!.addKey('SPACE'));
+    return this.scene.input.keyboard!.checkDown(this.scene.input.keyboard!.addKey('SPACE')) || this.touchInput.action;
+  }
+
+  public setTouchInput(direction: keyof typeof this.touchInput, pressed: boolean) {
+    this.touchInput[direction] = pressed;
+  }
+
+  public getTouchInput() {
+    return { ...this.touchInput };
   }
 }

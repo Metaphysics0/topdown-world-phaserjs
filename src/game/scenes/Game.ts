@@ -4,12 +4,14 @@ import { GameManager } from "../managers/GameManager";
 import { InputManager } from "../managers/InputManager";
 import { CameraController } from "../managers/CameraController";
 import { Player } from "../entities/Player";
+import { TouchControls } from "../ui/touch-controls";
 
 export class Game extends Scene {
   private gameManager: GameManager;
   private inputManager: InputManager;
   private cameraController!: CameraController;
   private player!: Player;
+  private touchControls!: TouchControls;
 
   map!: Phaser.Tilemaps.Tilemap;
   tileset!: Phaser.Tilemaps.Tileset;
@@ -35,6 +37,9 @@ export class Game extends Scene {
       this.map.heightInPixels
     );
     this.cameraController.followTarget(this.player.sprite);
+
+    this.touchControls = new TouchControls(this);
+    this.touchControls.create();
 
     EventBus.emit("current-scene-ready", this);
   }
