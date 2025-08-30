@@ -20,7 +20,7 @@ export class CameraController {
   }
 
   public followTarget(target: Phaser.GameObjects.GameObject) {
-    this.camera.startFollow(target);
+    this.camera.startFollow(target, true);
   }
 
   public stopFollowing() {
@@ -44,7 +44,12 @@ export class CameraController {
   }
 
   // Add more camera effects as needed
-  public pan(x: number, y: number, duration: number = 1000, callback?: () => void) {
-    this.camera.pan(x, y, duration, 'Linear', false, callback);
+  public pan(
+    x: number,
+    y: number,
+    duration: number = 1000,
+    callback?: () => void
+  ) {
+    this.camera.pan(x, y, duration, "Linear", false, callback);
   }
 }

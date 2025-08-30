@@ -5,7 +5,8 @@ export class Player {
   public scene: Scene;
   public x: number = 100;
   public y: number = 100;
-  
+  private currentAnimation: string = "idle";
+
   constructor(scene: Scene) {
     this.scene = scene;
     this.createSprite();
@@ -26,7 +27,7 @@ export class Player {
 
   public move(velocityX: number, velocityY: number) {
     this.sprite.setVelocity(velocityX, velocityY);
-    
+
     // Handle flip
     if (velocityX < 0) {
       this.sprite.setFlipX(true);
@@ -34,11 +35,11 @@ export class Player {
       this.sprite.setFlipX(false);
     }
 
-    // Handle animations
-    if (velocityX !== 0 || velocityY !== 0) {
-      this.sprite.anims.play("walk", true);
-    } else {
-      this.sprite.anims.play("idle", true);
+    // Handle animations - only change when needed
+    const targetAnimation =
+      velocityX !== 0 || velocityY !== 0 ? "walk" : "idle";
+    if (this.sprite.anims.currentAnim?.key !== targetAnimation) {
+      this.sprite.anims.play(targetAnimation);
     }
   }
 

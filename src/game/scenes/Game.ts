@@ -22,19 +22,18 @@ export class Game extends Scene {
   }
 
   create() {
-    // Set current scene in game manager
     this.gameManager.setCurrentScene(this);
 
-    // Initialize managers
     this.inputManager.initialize(this);
     this.cameraController = new CameraController(this);
 
-    // Create map and player
     this.createMap();
     this.createPlayer();
 
-    // Setup camera
-    this.cameraController.setBounds(this.map.widthInPixels, this.map.heightInPixels);
+    this.cameraController.setBounds(
+      this.map.widthInPixels,
+      this.map.heightInPixels
+    );
     this.cameraController.followTarget(this.player.sprite);
 
     EventBus.emit("current-scene-ready", this);
