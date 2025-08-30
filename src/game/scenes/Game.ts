@@ -36,9 +36,26 @@ export class Game extends Scene {
 
     this.player = this.physics.add.sprite(100, 100, "player");
     this.player.setScale(0.8); // Scale down if needed
-    // this.player.play("idle"); // Start with idle animation
 
     EventBus.emit("current-scene-ready", this);
+  }
+
+  update() {
+    const cursors = this.input.keyboard!.createCursorKeys();
+
+    if (cursors.left.isDown) {
+      this.player.setVelocityX(-100);
+      this.player.setFlipX(true); // flip when moving left
+    } else if (cursors.right.isDown) {
+      this.player.setVelocityX(100);
+      this.player.setFlipX(false);
+    } else if (cursors.up.isDown) {
+      this.player.setVelocityY(-100);
+    } else if (cursors.down.isDown) {
+      this.player.setVelocityY(100);
+    } else {
+      this.player.setVelocity(0);
+    }
   }
 
   changeScene() {
