@@ -23,7 +23,12 @@ export class Game extends Scene {
 
     this.createMap();
     this.createPlayer();
+
     this.cursors = this.input.keyboard!.createCursorKeys();
+
+    this.cameras.main.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
+    this.cameras.main.startFollow(this.player);
+    this.cameras.main.roundPixels = true;
 
     EventBus.emit("current-scene-ready", this);
   }
@@ -38,24 +43,20 @@ export class Game extends Scene {
 
   private createPlayer() {
     this.player = this.physics.add.sprite(100, 100, "player");
-    this.player.setSize(15, 19);
+    this.player.setSize(15, 18);
+    this.player.setOrigin(0.5, 1);
     this.player.anims.play("idle");
   }
 
   private createMap() {
-    const map = this.make.tilemap({ key: "map" });
-    const tileset = map.addTilesetImage(
+    this.map = this.make.tilemap({ key: "map" });
+    const tileset = this.map.addTilesetImage(
       "overworld_tileset-again", // <-- name from your JSON
       "overworld_tileset-again" // <-- key you used in preload
     )!;
 
-    const offsetX =
-      ((this.sys.game.config.width as number) - map.widthInPixels) / 2;
-    const offsetY =
-      ((this.sys.game.config.height as number) - map.heightInPixels) / 2;
-
-    map.createLayer("Tile Layer 1", tileset, offsetX, offsetY);
-    map.createLayer("Tile Layer 2", tileset, offsetX, offsetY);
+    this.map.createLayer("Tile Layer 1", tileset, 0, 0);
+    this.map.createLayer("Tile Layer 2", tileset, 0, 0);
   }
 
   private handleInput() {
