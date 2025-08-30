@@ -9,6 +9,7 @@ export class Game extends Scene {
   backgroundLayer!: Phaser.Tilemaps.TilemapLayer;
 
   player!: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
+  cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
 
   gameText!: Phaser.GameObjects.Text;
 
@@ -22,6 +23,7 @@ export class Game extends Scene {
 
     this.createMap();
     this.createPlayer();
+    this.cursors = this.input.keyboard!.createCursorKeys();
 
     EventBus.emit("current-scene-ready", this);
   }
@@ -57,22 +59,21 @@ export class Game extends Scene {
   }
 
   private handleInput() {
-    const cursors = this.input.keyboard!.createCursorKeys();
     const speed = 100;
 
     this.player.setVelocity(0);
 
-    if (cursors.left.isDown) {
+    if (this.cursors.left.isDown) {
       this.player.setVelocityX(-speed);
       this.player.setFlipX(true);
-    } else if (cursors.right.isDown) {
+    } else if (this.cursors.right.isDown) {
       this.player.setVelocityX(speed);
       this.player.setFlipX(false);
     }
 
-    if (cursors.up.isDown) {
+    if (this.cursors.up.isDown) {
       this.player.setVelocityY(-speed);
-    } else if (cursors.down.isDown) {
+    } else if (this.cursors.down.isDown) {
       this.player.setVelocityY(speed);
     }
 
