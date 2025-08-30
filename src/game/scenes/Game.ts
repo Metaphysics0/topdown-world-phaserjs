@@ -1,40 +1,48 @@
 import { EventBus } from "../EventBus";
 import { Scene } from "phaser";
+import { GameManager } from "../managers/GameManager";
+import { InputManager } from "../managers/InputManager";
+import { CameraController } from "../managers/CameraController";
+import { Player } from "../entities/Player";
 
 export class Game extends Scene {
-  camera!: Phaser.Cameras.Scene2D.Camera;
+  private gameManager: GameManager;
+  private inputManager: InputManager;
+  private cameraController!: CameraController;
+  private player!: Player;
 
   map!: Phaser.Tilemaps.Tilemap;
   tileset!: Phaser.Tilemaps.Tileset;
   backgroundLayer!: Phaser.Tilemaps.TilemapLayer;
 
-  player!: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
-  cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
-
-  gameText!: Phaser.GameObjects.Text;
-
   constructor() {
     super("Game");
+    this.gameManager = GameManager.getInstance();
+    this.inputManager = InputManager.getInstance();
   }
 
   create() {
-    this.camera = this.cameras.main;
-    this.camera.setBackgroundColor(0x00ff00);
+    // Set current scene in game manager
+    this.gameManager.setCurrentScene(this);
 
+    // Initialize managers
+    this.inputManager.initialize(this);
+    this.cameraController = new CameraController(this);
+
+    // Create map and player
     this.createMap();
     this.createPlayer();
 
-    this.cursors = this.input.keyboard!.createCursorKeys();
-
-    this.cameras.main.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
-    this.cameras.main.startFollow(this.player);
-    this.cameras.main.roundPixels = true;
+    // Setup camera
+    this.cameraController.setBounds(this.map.widthInPixels, this.map.heightInPixels);
+    this.cameraController.followTarget(this.player.sprite);
 
     EventBus.emit("current-scene-ready", this);
   }
 
   update() {
     this.handleInput();
+    this.player.update();
   }
 
   changeScene() {
@@ -42,10 +50,7 @@ export class Game extends Scene {
   }
 
   private createPlayer() {
-    this.player = this.physics.add.sprite(100, 100, "player");
-    this.player.setSize(15, 18);
-    this.player.setOrigin(0.5, 1);
-    this.player.anims.play("idle");
+    this.player = this.gameManager.createPlayer(this);
   }
 
   private createMap() {
@@ -60,31 +65,7 @@ export class Game extends Scene {
   }
 
   private handleInput() {
-    const speed = 100;
-
-    this.player.setVelocity(0);
-
-    if (this.cursors.left.isDown) {
-      this.player.setVelocityX(-speed);
-      this.player.setFlipX(true);
-    } else if (this.cursors.right.isDown) {
-      this.player.setVelocityX(speed);
-      this.player.setFlipX(false);
-    }
-
-    if (this.cursors.up.isDown) {
-      this.player.setVelocityY(-speed);
-    } else if (this.cursors.down.isDown) {
-      this.player.setVelocityY(speed);
-    }
-
-    if (
-      this.player.body.velocity.x !== 0 ||
-      this.player.body.velocity.y !== 0
-    ) {
-      this.player.anims.play("walk", true);
-    } else {
-      this.player.anims.play("idle", true);
-    }
+    const movement = this.inputManager.getMovementVector();
+    this.player.move(movement.x, movement.y);
   }
 }
