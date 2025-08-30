@@ -23,14 +23,14 @@ export class Preloader extends Scene {
   }
 
   preload() {
-    //  Load the assets for the game - Replace with your own assets
-    this.load.image("logo", "assets/logo.png");
-    this.load.image("star", "assets/star.png");
-
-    // Load adventure assets
     this.load.setPath("adventure-assets");
     this.load.tilemapTiledJSON("map", "overworld-map.json");
     this.load.image("overworld_tileset-again", "overworld_tileset.png");
+    this.load.bitmapFont(
+      "retro",
+      "fonts/click-font.png",
+      "fonts/click-font.xml"
+    );
   }
 
   create() {
