@@ -7,7 +7,7 @@ export class MainMenu extends Scene {
   logo!: GameObjects.Image;
   title!: GameObjects.Text;
 
-  MENU_ITEMS = ["start", "controls", "about"];
+  MENU_ITEMS = ["begin"];
 
   constructor() {
     super("MainMenu");
@@ -20,6 +20,7 @@ export class MainMenu extends Scene {
     this.background.setDisplaySize(width, height);
 
     this.createMenuItems();
+    this.createFooter();
 
     EventBus.emit("current-scene-ready", this);
   }
@@ -35,12 +36,12 @@ export class MainMenu extends Scene {
           baseY + idx * spacing,
           "retro",
           menuItem.toUpperCase(),
-          16
+          24
         )
         .setOrigin(0.5)
         .setInteractive({ useHandCursor: true });
 
-      if (menuItem === "start") {
+      if (menuItem === "begin") {
         menuText.on("pointerdown", () => this.scene.start("Game"));
       }
       menuText.on("pointerover", () => {
@@ -51,5 +52,13 @@ export class MainMenu extends Scene {
         menuText.clearTint(); // back to white
       });
     }
+  }
+
+  private createFooter() {
+    this.add
+      .bitmapText(this.scale.width / 2, 150, "retro", "ryan roberts", 12)
+      .setOrigin(0.5)
+      // .setTint(0x) // Gray color
+      .setAlpha(0.6); // Low opacity (60%)
   }
 }
