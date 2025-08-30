@@ -28,24 +28,33 @@ export class Preloader extends Scene {
       "fonts/click-font.xml"
     );
 
-    this.load.spritesheet("player", "char_sprites/soldier_spritesheet.png", {
-      frameWidth: 64,
-      frameHeight: 64,
-    });
+    this.load.atlas(
+      "player",
+      "char_sprites/soldier_spritesheet.png",
+      "soldier-sprites-tp-hash.json"
+    );
   }
 
   create() {
+    const idleFrames = [];
+    for (let i = 1; i <= 6; i++) {
+      idleFrames.push({ key: "player", frame: `sprite${i}` });
+    }
     this.anims.create({
       key: "idle",
-      frames: this.anims.generateFrameNumbers("player", { start: 0, end: 5 }), // depends on your spritesheet
-      frameRate: 5,
+      frames: idleFrames,
+      frameRate: 6,
       repeat: -1,
     });
 
+    const walkFrames = [];
+    for (let i = 7; i <= 12; i++) {
+      walkFrames.push({ key: "player", frame: `sprite${i}` });
+    }
     this.anims.create({
       key: "walk",
-      frames: this.anims.generateFrameNumbers("player", { start: 6, end: 13 }),
-      frameRate: 6,
+      frames: walkFrames,
+      frameRate: 12,
       repeat: -1,
     });
 

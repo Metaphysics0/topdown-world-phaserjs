@@ -35,26 +35,40 @@ export class Game extends Scene {
     map.createLayer("Tile Layer 2", tileset, offsetX, offsetY);
 
     this.player = this.physics.add.sprite(100, 100, "player");
-    this.player.setScale(0.8); // Scale down if needed
+
+    // Adjust the physics body to match the sprite size from the texture atlas
+    this.player.setSize(15, 19);
+    this.player.setScale(2); // Scale up to make it more visible
+
+    this.player.anims.play("idle");
 
     EventBus.emit("current-scene-ready", this);
   }
 
   update() {
     const cursors = this.input.keyboard!.createCursorKeys();
+    const speed = 100;
+
+    this.player.setVelocity(0);
 
     if (cursors.left.isDown) {
-      this.player.setVelocityX(-100);
-      this.player.setFlipX(true); // flip when moving left
+      this.player.setVelocityX(-speed);
+      this.player.setFlipX(true);
     } else if (cursors.right.isDown) {
-      this.player.setVelocityX(100);
+      this.player.setVelocityX(speed);
       this.player.setFlipX(false);
-    } else if (cursors.up.isDown) {
-      this.player.setVelocityY(-100);
+    }
+
+    if (cursors.up.isDown) {
+      this.player.setVelocityY(-speed);
     } else if (cursors.down.isDown) {
-      this.player.setVelocityY(100);
+      this.player.setVelocityY(speed);
+    }
+
+    if (this.player.body.velocity.x !== 0 || this.player.body.velocity.y !== 0) {
+      this.player.anims.play("walk", true);
     } else {
-      this.player.setVelocity(0);
+      this.player.anims.play("idle", true);
     }
   }
 
